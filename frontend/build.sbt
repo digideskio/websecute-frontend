@@ -2,11 +2,18 @@ import com.typesafe.sbt.SbtScalariform._
 
 import scalariform.formatter.preferences._
 
-name := "play-silhouette-seed"
+name := "websecute-frontend"
 
 version := "4.0.0"
 
 scalaVersion := "2.11.8"
+
+libraryDependencies ++= Seq(
+  evolutions,
+  "mysql" % "mysql-connector-java" % "5.1.34",
+  "com.typesafe.slick" %% "slick" % "3.1.1",
+  "com.typesafe.play" %% "play-slick-evolutions" % "2.0.0"
+)
 
 resolvers += Resolver.jcenterRepo
 
@@ -56,3 +63,6 @@ ScalariformKeys.preferences := ScalariformKeys.preferences.value
   .setPreference(FormatXml, false)
   .setPreference(DoubleIndentClassDeclaration, false)
   .setPreference(DanglingCloseParenthesis, Preserve)
+
+
+fork in run := true
