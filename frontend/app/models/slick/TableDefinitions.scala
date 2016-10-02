@@ -3,7 +3,7 @@ package models.slick
 import java.sql.Timestamp
 import java.util.UUID
 
-import models.DbUser
+import models.{ DbDependency, DbTool, DbUser }
 import slick.driver.JdbcProfile
 
 trait TableDefinitions {
@@ -24,5 +24,27 @@ trait TableDefinitions {
     def * = (userID, providerID, providerKey, firstName, lastName, fullName, email, avatarURL, activated) <> (DbUser.tupled, DbUser.unapply)
   }
 
+  class Tools(tag: Tag) extends Table[DbTool](tag, "Tools") {
+    def id = column[Long]("ToolID", O.PrimaryKey, O.AutoInc)
+    def userID = column[String]("UserID")
+    def reviewerID = column[Option[String]]("ReviewerID")
+    def variables = column[Option[String]]("Variables")
+    def name = column[String]("Name")
+    def description = column[String]("Description")
+    def script = column[String]("Script")
+    def extension = column[String]("Extension")
+    def created = column[Timestamp]("Created")
+
+    def * = (id, userID, reviewerID, variables, name, description, script, extension, created) <> (DbTool.tupled, DbTool.unapply)
+  }
+
+  class Dependencies(tag: Tag) extends Table[DbDependency](tag, "Dependencies") {
+    def id = column[Long]("DependencyID", O.PrimaryKey, O.AutoInc)
+    def name = column[String]("Name")
+
+    def * = (id, name) <> (DbDependency.tupled, DbDependency.unapply)
+  }
+
   val usersTbl = TableQuery[Users]
+  val toolsTbl = TableQuery[Tools]
 }

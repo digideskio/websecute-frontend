@@ -51,3 +51,8 @@ case class DbUser(
   email: Option[String],
   avatarURL: Option[String],
   activated: Boolean)
+
+case class UiUser( // TODO: Unique user handle.
+  userID: UUID,
+  name: String,
+  avatarURL: Option[String])
