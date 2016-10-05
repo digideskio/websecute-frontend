@@ -1,6 +1,7 @@
 package models
 
 import java.sql.Timestamp
+import java.util.UUID
 
 /**
  *
@@ -24,7 +25,13 @@ case class UiTool(
   toolBody: String,
   outputExt: String,
   created: Timestamp
-)
+) {
+  def this(t: DbTool, u: DbUser) = this(t.toolID, UiUser(u.userID, u.fullName.get, u.avatarURL), None, t.variables, t.name, t.description, t.toolBody, t.outputExt, t.created)
+}
+
+object UiTool {
+  def apply(t: DbTool, u: DbUser) = new UiTool(t, u)
+}
 
 /**
  *
@@ -40,7 +47,7 @@ case class UiTool(
  */
 case class DbTool(
   toolID: Long,
-  userID: String,
+  userID: UUID,
   reviewerID: Option[String],
   variables: Option[String],
   name: String,

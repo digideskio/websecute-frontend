@@ -26,7 +26,7 @@ trait TableDefinitions {
 
   class Tools(tag: Tag) extends Table[DbTool](tag, "Tools") {
     def id = column[Long]("ToolID", O.PrimaryKey, O.AutoInc)
-    def userID = column[String]("UserID")
+    def userID = column[UUID]("UserID")
     def reviewerID = column[Option[String]]("ReviewerID")
     def variables = column[Option[String]]("Variables")
     def name = column[String]("Name")
