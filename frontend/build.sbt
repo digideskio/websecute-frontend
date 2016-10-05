@@ -12,7 +12,8 @@ libraryDependencies ++= Seq(
   evolutions,
   "mysql" % "mysql-connector-java" % "5.1.34",
   "com.typesafe.slick" %% "slick" % "3.1.1",
-  "com.typesafe.play" %% "play-slick-evolutions" % "2.0.0"
+  "com.typesafe.play" %% "play-slick-evolutions" % "2.0.0",
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.11.12"
 )
 
 resolvers += Resolver.jcenterRepo
@@ -20,7 +21,7 @@ resolvers += Resolver.jcenterRepo
 libraryDependencies ++= Seq(
   "com.mohiva" %% "play-silhouette" % "4.0.0",
   "com.mohiva" %% "play-silhouette-password-bcrypt" % "4.0.0",
-  "com.mohiva" %% "play-silhouette-persistence" % "4.0.0",
+  "com.mohiva" %% "play-silhouette-persistence-reactivemongo" % "4.0.0",
   "com.mohiva" %% "play-silhouette-crypto-jca" % "4.0.0",
   "org.webjars" %% "webjars-play" % "2.5.0-2",
   "net.codingwell" %% "scala-guice" % "4.0.1",
