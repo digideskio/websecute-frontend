@@ -6,6 +6,7 @@ import javax.inject.Inject
 
 import models.{ DbTool, DbUser, Page, UiTool }
 import models.slick.TableDefinitions
+import play.api.Logger
 import play.api.db.slick.{ DatabaseConfigProvider, HasDatabaseConfigProvider }
 import slick.driver.JdbcProfile
 
@@ -76,45 +77,27 @@ class ToolDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProvi
    * Loads a list of tools.
    *
    * @param page Page number (starts from 0).
-   * @param orderBy Column used for sorting. // TODO
    * @param filter Filter used on tool names.
    * @param onlyReviewed True: view only reviewed tools; false: view only non-reviewed tools
    * @param ownerId If reviewed is false, view only owner's unreviewed tools.
    */
-  def list(page: Int = 0, orderBy: Int = 1, filter: String = "%", onlyReviewed: Boolean = true, ownerId: Option[UUID]): Future[Page[UiTool]] = {
+  def list(page: Int = 0, filter: String = "%", onlyReviewed: Boolean = true, ownerId: Option[UUID] = None): Future[Page[UiTool]] = {
     val pageSize: Long = 10
     val offset: Long = 10 * page.toLong
 
-    val query = if (onlyReviewed) { // Retrieve approved tools
-      (for {
-        t <- toolsTbl if (t.name.toLowerCase like filter.toLowerCase) && t.reviewerID.nonEmpty
-        u <- usersTbl if t.userID === u.userID
-      } yield (t, u))
-        .drop(offset)
-        .take(pageSize)
-    } else if (ownerId.isEmpty) { // Retrieve unapproved tools
-      (for {
-        t <- toolsTbl if (t.name.toLowerCase like filter.toLowerCase) && t.reviewerID.isEmpty
-        u <- usersTbl if t.userID === u.userID
-      } yield (t, u))
-        .drop(offset)
-        .take(pageSize)
-    } else { // Retrieve user's approved tools
-      (for {
-        t <- toolsTbl if (t.name.toLowerCase like filter.toLowerCase) && t.reviewerID.isEmpty && t.userID === ownerId.get
-        u <- usersTbl if t.userID === u.userID
-      } yield (t, u))
-        .drop(offset)
-        .take(pageSize)
-    }
+    def toolFilter(t: ToolDAOImpl.this.Tools) = accessFilter(t) && (t.name.toLowerCase like "%" + filter.toLowerCase + "%")
 
-    val totalCntQuery =
-      if (onlyReviewed) Query(toolsTbl.filter(
-        t => (t.name.toLowerCase like filter.toLowerCase) && t.reviewerID.nonEmpty).length)
-      else if (ownerId.isEmpty) Query(toolsTbl.filter(
-        t => (t.name.toLowerCase like filter.toLowerCase) && t.reviewerID.isEmpty).length)
-      else Query(toolsTbl.filter(
-        t => (t.name.toLowerCase like filter.toLowerCase) && t.reviewerID.isEmpty && t.userID === ownerId.get).length)
+    def accessFilter(t: ToolDAOImpl.this.Tools) =
+      if (onlyReviewed) t.reviewerID.nonEmpty // View only reviewed tools
+      else if (ownerId.isEmpty) t.reviewerID.isEmpty // If no user is given, view all reviewed tools
+      else t.reviewerID.isEmpty && t.userID === ownerId.get // View user's unreviewed tools
+
+    val query = (for {
+      t <- toolsTbl if toolFilter(t)
+      u <- usersTbl if t.userID === t.userID
+    } yield (t, u)).drop(offset).take(pageSize)
+
+    val totalCntQuery = toolsTbl.filter(toolFilter).length
 
     val toolsWithOwners: Future[Seq[(DbTool, DbUser)]] = db.run(query.result)
     val uiTools: Future[Seq[UiTool]] = toolsWithOwners.map { s: Seq[(DbTool, DbUser)] =>
@@ -123,12 +106,12 @@ class ToolDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProvi
       }
     }
 
-    val totalCnt: Future[Int] = db.run(totalCntQuery.result.head)
+    val totalCnt: Future[Int] = db.run(Query(totalCntQuery).result.head)
 
     for {
       tools <- uiTools
       cnt <- totalCnt
-    } yield Page(tools, page, offset, cnt.toLong)
+    } yield Page(tools, page, offset, cnt.toLong, fulltextQuery = filter)
   }
 
   /**

@@ -1,0 +1,92 @@
+@(pageInfo: views.support.PageInfo, toolPage: models.Page[UiTool])(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
+
+@th(title: String, hiddenMobile: Boolean = false) = {
+    <th class="col1 header headerSortDown  @{if(hiddenMobile) "hidden-sm hidden-xs"}">
+        @title
+    </th>
+}
+
+@link(pageNo: Int, newOrderBy: Option[Int] = None) = @{
+    routes.BrowseToolsController.view(pageNo, toolPage.fulltextQuery)
+}
+
+@pageTitle = {
+    <div class="row">
+        <hr class="col-md-12" />
+        <h4 class="col-md-10">Explore websecutable tools</h4>
+        <hr class="col-md-12" />
+    </div>
+}
+
+@actionBar = {
+    <div class="row">
+
+        @helper.form(action=routes.BrowseToolsController.view(), 'class -> "form-inline col-xs-6") {
+            <input type="search" id="searchbox" name="f" value="@toolPage.fulltextQuery" placeholder="Filter by tool name..." class="form-control col-md-6">
+            <input type="submit" id="searchsubmit" value="Filter by name" class="form-control btn-primary">
+        }
+        <div class="col-xs-6">
+            <a class="btn btn-primary pull-right" id="add" href="@@routes.CreateToolController.form()">Add a new tool</a>
+        </div>
+    </div>
+}
+
+@tableHeader = {
+    <thead>
+        <tr>
+            @th("Tool name")
+            @th("Description")
+            @th("Created")
+            @th("Author", true)
+        </tr>
+    </thead>
+}
+
+@tableBody = {
+    <tbody>
+    @toolPage.items.map { tool =>
+        <tr>
+            <td class="col-md-2"><a href="@@routes.ApplicationController.getTool(tool.id.toLong)">@tool.name</a></td>
+            <td>@tool.description</td>
+            <td class="col-md-2">@tool.created.format("dd MMM yyyy")</td>
+            <td class="col-md-2 hidden-sm hidden-xs">@tool.creator.name</td>
+        </tr>
+    }
+    </tbody>
+}
+
+@paginator = {
+    <div class="text-center">
+        <ul class="pagination">
+            @toolPage.prev match {
+                case Some(pageNo) => { <li class="prev"><a href="@link(pageNo)">&larr; Previous</a></li> }
+                case None => { <li class="prev disabled"><a>&larr; Previous</a></li> }
+            }
+
+            <li class="active hidden-xs"><a>Displaying @(toolPage.offset + 1) to @(toolPage.offset + toolPage.items.size) of @toolPage.total</a></li>
+
+            @toolPage.next match {
+                case Some(pageNo) => { <li class="next"><a href="@link(pageNo)">Next &rarr;</a></li> }
+                case None => { <li class="next disabled"><a>Next &rarr;</a></li> }
+            }
+        </ul>
+    </div>
+}
+
+@main(pageInfo) {
+    <div class="col-md-10 col-md-offset-1">
+        @pageTitle
+        @actionBar
+
+        @if(toolPage.items.nonEmpty) {
+            <table class="table">
+                @tableHeader
+                @tableBody
+            </table>
+
+            @paginator
+        } else {
+            <div class="well"><em>Nothing to display</em></div>
+        }
+    </div>
+}

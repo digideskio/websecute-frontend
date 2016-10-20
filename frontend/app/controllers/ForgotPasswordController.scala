@@ -11,6 +11,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.mailer.{ Email, MailerClient }
 import play.api.mvc.Controller
 import utils.auth.DefaultEnv
+import views.support.PageInfo
 
 import scala.concurrent.Future
 
@@ -39,7 +40,7 @@ class ForgotPasswordController @Inject() (
    * @return The result to display.
    */
   def view = silhouette.UnsecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.forgotPassword(ForgotPasswordForm.form)))
+    Future.successful(Ok(views.html.forgotPassword(PageInfo(title = Messages("forgot.password.title")), ForgotPasswordForm.form)))
   }
 
   /**
@@ -52,7 +53,7 @@ class ForgotPasswordController @Inject() (
    */
   def submit = silhouette.UnsecuredAction.async { implicit request =>
     ForgotPasswordForm.form.bindFromRequest.fold(
-      form => Future.successful(BadRequest(views.html.forgotPassword(form))),
+      form => Future.successful(BadRequest(views.html.forgotPassword(PageInfo(Messages("forgot.password.title")), form))),
       email => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, email)
         val result = Redirect(routes.SignInController.view()).flashing("info" -> Messages("reset.email.sent"))

@@ -32,7 +32,7 @@ trait TableDefinitions {
     def name = column[String]("Name")
     def description = column[String]("Description")
     def script = column[String]("Script")
-    def extension = column[String]("Extension")
+    def extension = column[String]("OutputExt")
     def created = column[Timestamp]("Created")
 
     def * = (id, userID, reviewerID, variables, name, description, script, extension, created) <> (DbTool.tupled, DbTool.unapply)

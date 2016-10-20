@@ -17,6 +17,7 @@ import play.api.i18n.{ I18nSupport, Messages, MessagesApi }
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Controller
 import utils.auth.DefaultEnv
+import views.support.PageInfo
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -70,7 +71,7 @@ class SignInController @Inject() (
           val result = Redirect(routes.ApplicationController.index())
           userService.retrieve(loginInfo).flatMap {
             case Some(user) if !user.activated =>
-              Future.successful(Ok(views.html.activateAccount(data.email)))
+              Future.successful(Ok(views.html.activateAccount(PageInfo(Messages("activate.account.title")), data.email)))
             case Some(user) =>
               val c = configuration.underlying
               silhouette.env.authenticatorService.create(loginInfo).map {

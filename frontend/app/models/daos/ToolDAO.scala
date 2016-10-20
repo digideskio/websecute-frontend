@@ -43,12 +43,11 @@ trait ToolDAO {
    * Loads a list of tools.
    *
    * @param page Page number (starts from 0).
-   * @param orderBy Column used for sorting.
    * @param filter filter used on tool names.
    * @param reviewed True: view only reviewed tools; false: view only non-reviewed tools
    * @param ownerID If reviewed is false, view only owner's unreviewed tools.
    */
-  def list(page: Int, orderBy: Int, filter: String, reviewed: Boolean = true, ownerID: Option[UUID]): Future[Page[UiTool]]
+  def list(page: Int, filter: String, reviewed: Boolean = true, ownerID: Option[UUID]): Future[Page[UiTool]]
 
   /**
    * Retrieves a tool and its author's public profile.

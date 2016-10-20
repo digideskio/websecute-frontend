@@ -13,6 +13,7 @@ import play.api.i18n.{ I18nSupport, Messages, MessagesApi }
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Controller
 import utils.auth.DefaultEnv
+import views.support.PageInfo
 
 import scala.concurrent.Future
 
@@ -45,7 +46,7 @@ class ResetPasswordController @Inject() (
    */
   def view(token: UUID) = silhouette.UnsecuredAction.async { implicit request =>
     authTokenService.validate(token).map {
-      case Some(authToken) => Ok(views.html.resetPassword(ResetPasswordForm.form, token))
+      case Some(authToken) => Ok(views.html.resetPassword(PageInfo(Messages("reset.password.title")), ResetPasswordForm.form, token))
       case None => Redirect(routes.SignInController.view()).flashing("error" -> Messages("invalid.reset.link"))
     }
   }
@@ -60,7 +61,7 @@ class ResetPasswordController @Inject() (
     authTokenService.validate(token).flatMap {
       case Some(authToken) =>
         ResetPasswordForm.form.bindFromRequest.fold(
-          form => Future.successful(BadRequest(views.html.resetPassword(form, token))),
+          form => Future.successful(BadRequest(views.html.resetPassword(PageInfo(Messages("reset.password.title")), form, token))),
           password => userService.retrieve(authToken.userID).flatMap {
             case Some(user) if user.loginInfo.providerID == CredentialsProvider.ID =>
               val passwordInfo = passwordHasherRegistry.current.hash(password)
