@@ -26,7 +26,7 @@ class UserDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProvi
   def find(loginInfo: LoginInfo): Future[Option[User]] = {
     val filterByLInfo = usersTbl.filter(x => x.providerID === loginInfo.providerID && x.providerKey === loginInfo.providerKey)
     db.run(filterByLInfo.result.headOption).flatMap {
-      case Some(u) => Future.successful(Some(User(u.userID, LoginInfo(u.providerID, u.providerKey), u.firstName, u.lastName, u.fullName, u.email, u.avatarURL, u.activated)))
+      case Some(u) => Future.successful(Some(User(u.userID, LoginInfo(u.providerID, u.providerKey), u.name, u.handle, u.bio, u.email, u.avatarURL, u.activated)))
       case None => Future.successful(None)
     }
   }
@@ -40,7 +40,7 @@ class UserDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProvi
   def find(userID: UUID): Future[Option[User]] = {
     val filterById = usersTbl.filter(_.userID === userID)
     db.run(filterById.result.headOption).flatMap {
-      case Some(u) => Future.successful(Some(User(u.userID, LoginInfo(u.providerID, u.providerKey), u.firstName, u.lastName, u.fullName, u.email, u.avatarURL, u.activated)))
+      case Some(u) => Future.successful(Some(User(u.userID, LoginInfo(u.providerID, u.providerKey), u.name, u.handle, u.bio, u.email, u.avatarURL, u.activated)))
       case None => Future.successful(None)
     }
   }
@@ -52,7 +52,7 @@ class UserDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProvi
    * @return The saved user.
    */
   def save(u: User) = {
-    val action = DBIO.seq(usersTbl.insertOrUpdate(DbUser(u.userID, u.loginInfo.providerID, u.loginInfo.providerKey, u.firstName, u.lastName, u.fullName, u.email, u.avatarURL, u.activated)))
+    val action = DBIO.seq(usersTbl.insertOrUpdate(DbUser(u.userID, u.loginInfo.providerID, u.loginInfo.providerKey, u.name, u.handle, u.bio, u.email, u.avatarURL, u.activated)))
     db.run(action).flatMap(r => Future.successful(u))
   }
 }

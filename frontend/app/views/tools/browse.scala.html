@@ -34,8 +34,8 @@
 @tableHeader = {
     <thead>
         <tr>
-            @th("Tool name")
-            @th("Description")
+            @th("name")
+            @th("title")
             @th("Created")
             @th("Author", true)
         </tr>
@@ -47,9 +47,9 @@
     @toolPage.items.map { tool =>
         <tr>
             <td class="col-md-2"><a href="@@routes.ApplicationController.getTool(tool.id.toLong)">@tool.name</a></td>
-            <td>@tool.description</td>
+            <td>@tool.readmeHtml</td>
             <td class="col-md-2">@tool.created.format("dd MMM yyyy")</td>
-            <td class="col-md-2 hidden-sm hidden-xs">@tool.creator.name</td>
+            <td class="col-md-2 hidden-sm hidden-xs">@tool.owner.name</td>
         </tr>
     }
     </tbody>
