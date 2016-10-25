@@ -1,5 +1,11 @@
 tools.browse.title = Browse the humongous database
 
+
+# Header
+header.title = Websecute
+header.navbar.home = Home
+header.navbar.browse = Browse
+
 # SILHOUETTE MESSAGES FOLLOW
 
 error.email = Valid email required
