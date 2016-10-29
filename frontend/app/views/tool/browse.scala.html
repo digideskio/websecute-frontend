@@ -46,7 +46,7 @@
     <tbody>
     @toolPage.items.map { tool =>
         <tr>
-            <td class="col-md-2"><a href="@@routes.ApplicationController.getTool(tool.id.toLong)">@tool.name</a></td>
+            <td class="col-md-2"><a href="@routes.ToolController.details(tool.owner.handle, tool.name)">@tool.name</a></td>
             <td>@tool.readmeHtml</td>
             <td class="col-md-2">@tool.created.format("dd MMM yyyy")</td>
             <td class="col-md-2 hidden-sm hidden-xs">@tool.owner.name</td>

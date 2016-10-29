@@ -82,9 +82,16 @@ class ToolDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProvi
     } yield Page(tools, page, offset, cnt.toLong, fulltextQuery = filter)
   }
 
-  def retrieve(ownerHandle: String, name: String): Future[UiTool] =
+  def retrieve(ownerHandle: String, name: String): Future[Option[UiTool]] = {
+    val q = for {
+      (t, u) <- toolsTbl.filter(_.name === name) join usersTbl.filter(_.handle === ownerHandle) on (_.ownerHandle === _.handle)
+    } yield (t, u)
+
     for {
-      t <- db.run(toolsTbl.filter(t => t.ownerHandle === ownerHandle && t.name === name).result.head)
-      u <- db.run(usersTbl.filter(_.handle === t.ownerHandle).result.head)
-    } yield UiTool(t, u)
+      seq <- db.run(q.result)
+    } yield seq.headOption match {
+      case Some(tu) => Some(UiTool(tu._1, tu._2))
+      case None => None
+    }
+  }
 }
