@@ -23,11 +23,16 @@ POST        /password/change                 controllers.ChangePasswordControlle
 GET         /account/email/:email            controllers.ActivateAccountController.send(email: String)
 GET         /account/activate/:token         controllers.ActivateAccountController.activate(token: java.util.UUID)
 
+## Tools
 # List tools
 GET         /browse                          controllers.BrowseToolsController.view(p:Int ?= 0, f ?= "")
 
 # Tool detail
 GET         /:ownerHandle/:toolName          @controllers.ToolController.details(ownerHandle: String, toolName: String)
+
+# Upsert tool
+GET         /upsert                          @controllers.UpsertToolController.view
+POST        /upsert                          @controllers.UpsertToolController.submit
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                    controllers.Assets.at(path="/public", file)

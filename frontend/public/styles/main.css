@@ -1,7 +1,34 @@
+/* Websecute */
+
+.col-centered {
+    float: none;
+    margin: 0 auto;
+}
+
+h1 {
+    border-bottom: 1px solid #aaa;
+}
+
+#subHeader {
+    position: relative;
+    top: 53px;
+}
+
+#readmeMd {
+    color: black;
+    font-family: Menlo,Monaco,Consolas,monospace;
+    font-weight: 100;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* Silhouette follows */
+
 body {
     padding-top: 50px;
     font-size: 16px;
-    background: #f5f7f9;
+    background: #ffffff;
 }
 
 h1 {
@@ -9,7 +36,7 @@ h1 {
     font-size: 30px;
 }
 .starter-template {
-    padding: 40px 15px;
+    padding: 0px 15px;
 }
 
 input, button {

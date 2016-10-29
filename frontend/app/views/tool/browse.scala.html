@@ -26,7 +26,7 @@
             <input type="submit" id="searchsubmit" value="Filter by name" class="form-control btn-primary">
         }
         <div class="col-xs-6">
-            <a class="btn btn-primary pull-right" id="add" href="@@routes.CreateToolController.form()">Add a new tool</a>
+            <a class="btn btn-primary pull-right" id="add" href="@routes.UpsertToolController.view()">Add a new tool</a>
         </div>
     </div>
 }
@@ -47,7 +47,7 @@
     @toolPage.items.map { tool =>
         <tr>
             <td class="col-md-2"><a href="@routes.ToolController.details(tool.owner.handle, tool.name)">@tool.name</a></td>
-            <td>@tool.readmeHtml</td>
+            <td>@tool.title</td>
             <td class="col-md-2">@tool.created.format("dd MMM yyyy")</td>
             <td class="col-md-2 hidden-sm hidden-xs">@tool.owner.name</td>
         </tr>

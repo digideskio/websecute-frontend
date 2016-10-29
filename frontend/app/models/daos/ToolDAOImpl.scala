@@ -19,24 +19,15 @@ import scala.concurrent.Future
 class ToolDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends ToolDAO with TableDefinitions with HasDatabaseConfigProvider[JdbcProfile] {
   import driver.api._
 
-  def save(tool: DbTool): Future[DbTool] = {
-    ??? // TODO
+  def save(tool: DbTool): Future[DbTool] = ???
+
+  def upsert(tool: DbTool): Future[Int] = {
+    val action = toolsTbl.insertOrUpdate(tool)
+    db.run(action)
   }
 
-  def create(ownerHandle: String, tool: forms.UpsertToolForm.Data): Future[DbTool] = {
-    val newTool = DbTool(
-      name = tool.name, // This field is ignored because of the AutoInc flag in TableDefinitions
-      ownerHandle = ownerHandle,
-      reviewerHandle = None,
-      sourceCode = tool.sourceCode,
-      readmeMd = tool.readmeMd,
-      readmeHtml = Processor.process(tool.readmeMd),
-      title = tool.title,
-      created = new Timestamp(System.currentTimeMillis())
-    )
-
-    val action = (toolsTbl returning toolsTbl) += newTool
-
+  def create(tool: DbTool): Future[DbTool] = {
+    val action = (toolsTbl returning toolsTbl) += tool
     db.run(action)
   }
 
@@ -49,16 +40,22 @@ class ToolDAOImpl @Inject() (protected val dbConfigProvider: DatabaseConfigProvi
         .update((ownerHandle, name, Some(reviewerHandle)))
     )
 
-  def list(page: Int = 0, filter: String = "%", onlyReviewed: Boolean = true, ownerHandle: Option[String] = None): Future[Page[UiTool]] = {
+  def listAll(page: Int = 0, filter: String = "%") = list(page, filter, _ => true)
+
+  def listReviewed(page: Int = 0, filter: String = "%") = list(page, filter, t => t.reviewerHandle.nonEmpty)
+
+  def listUsersUnreviewed(page: Int = 0, filter: String = "%", ownerHandle: String) = {
+    list(page, filter, t => t.reviewerHandle.isEmpty && t.ownerHandle === ownerHandle)
+  }
+
+  def listAllUnreviewed(page: Int = 0, filter: String = "%") = list(page, filter, t => t.reviewerHandle.isEmpty)
+
+  //def list(page: Int = 0, filter: String = "%", onlyReviewed: Boolean = true, ownerHandle: Option[String] = None): Future[Page[UiTool]] = {
+  def list(page: Int = 0, filter: String = "%", accessFilter: ToolDAOImpl.this.Tools => Rep[Boolean]): Future[Page[UiTool]] = {
     val pageSize: Long = 10
     val offset: Long = 10 * page.toLong
 
     def toolFilter(t: ToolDAOImpl.this.Tools) = accessFilter(t) && (t.title.toLowerCase like "%" + filter.toLowerCase + "%")
-
-    def accessFilter(t: ToolDAOImpl.this.Tools) =
-      if (onlyReviewed) t.reviewerHandle.nonEmpty // View only reviewed tools
-      else if (ownerHandle.isEmpty) t.reviewerHandle.isEmpty // If no user is given, view all reviewed tools
-      else t.reviewerHandle.isEmpty && t.ownerHandle === ownerHandle.get // View user's unreviewed tools
 
     val query = (for {
       t <- toolsTbl if toolFilter(t)

@@ -6,6 +6,27 @@ header.title = Websecute
 header.navbar.home = Home
 header.navbar.browse = Browse
 
+# Create tool form
+tool.upsert.title = Title
+tool.upsert.name = Unique name
+tool.upsert.readme =\
+Describe your tool and **declare variables** here.\n\n\
+If a line contains a string with the following pattern:  \n\
+@VAR_NAME:=VAR_TYPE@  \n\
+it will be regarded as a variable declaration.\n\n\
+The variable name 'stdin', or '-', are special variable names that will let the user upload a file\
+which will be passed to your tool's standard input.\n\n\
+\
+### Examples ###\n\
+@URL:=string@ // Declares URL as a string.  \n\
+@INPUT:=stdin@  \n\
+@INPUT:=-@
+
+tool.upsert.source = Paste the source code here.
+tool.upsert.submit = Submit
+tool.upsert.success = Tool upserted.
+
+
 # SILHOUETTE MESSAGES FOLLOW
 
 error.email = Valid email required

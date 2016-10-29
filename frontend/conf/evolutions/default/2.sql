@@ -5,9 +5,9 @@ INSERT INTO Users (UserID,ProviderID,ProviderKey,Name,Handle,Bio,Email,AvatarURL
 
 
 INSERT INTO Tools (`Name`,`OwnerHandle`,`ReviewerHandle`,`SourceCode`,`ReadmeMd`,`ReadmeHtml`,`Title`,`Created`) VALUES
-('t1name', 'grant', NULL, '#!/bin/bash\r\nMIN=5\r\nMAX=15\r\nseq \"$MIN\" \"$MAX\"', 'Generate numbers.', 'Generate number list', 'first', TIMESTAMP '2015-04-08 20:34:57.331'),
-('t2name', 'grant', 'grant', '#!/bin/bash\r\nMIN=5\r\nMAX=15\r\nseq \"$MIN\" \"$MAX\"', 'Generate numbers.', 'Generate number list', 'second', TIMESTAMP '2015-04-08 20:34:57.331'),
-('t3name', 'grant', 'grant', '#!/bin/bash\r\nMIN=5\r\nMAX=15\r\nseq \"$MIN\" \"$MAX\"', 'Generate numbers.', 'Generate number list', 'third', TIMESTAMP '2015-04-08 20:34:57.331')
+('t1name', 'grant', NULL, '#!/bin/bash\r\nMIN=5\r\nMAX=15\r\nseq \"$MIN\" \"$MAX\"', 'Generate numbers.', 'Generate <strong>number</strong> list', 'first', TIMESTAMP '2015-04-08 20:34:57.331'),
+('t2name', 'grant', 'grant', '#!/bin/bash\r\nMIN=5\r\nMAX=15\r\nseq \"$MIN\" \"$MAX\"', 'Generate numbers.', '<strong>Generate </strong> number list', 'second', TIMESTAMP '2015-04-08 20:34:57.331'),
+('t3name', 'grant', 'grant', '#!/bin/bash\r\nMIN=5\r\nMAX=15\r\nseq \"$MIN\" \"$MAX\"', 'Generate numbers.', 'Generate number <strong>list</strong>', 'third', TIMESTAMP '2015-04-08 20:34:57.331')
 
 # --- !Downs
 

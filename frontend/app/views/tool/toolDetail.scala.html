@@ -1,61 +1,66 @@
 @(pageInfo: views.support.PageInfo, tool: UiTool)(implicit request: RequestHeader, messages: Messages, webJarAssets: WebJarAssets)
 
-@main(pageInfo) {
-    <div class="col-md-10 col-md-offset-1">
-        <div class="row">
-            <h3 class="col-sm-8">@tool.title</h3>
-            <div class="col-sm-4 text-right">
-                By @tool.owner.name <img src="@tool.owner.avatarURL.getOrElse(routes.Assets.at("images/silhouette.png"))" style="height:40px;" />
-            </div>
-            <hr class="col-md-12" />
-        </div>
-        <div class="row">
-                <!-- Navigation -->
-            <div class="col-sm-2 col-sm-push-10">
-                <ul class="nav nav-pills nav-stacked" id="myTabs">
-                    <li class="active"><a href="#use" data-toggle="pill">Use tool</a></li>
-                    <li><a href="#source" data-toggle="pill">Source</a></li>
-                </ul>
-            </div>
+@readmeSection = {
+    @Html(tool.readmeHtml)
+}
 
-                <!-- Content -->
-            <div class="col-sm-10 col-sm-pull-2">
-                <div class="tab-content">
-                    <div class="tab-pane active" id="use">
-                        <h4>Description</h4>
-                        <div class="row data">
-                            <p class="col-md-9">@tool.readmeHtml</p>
-                            <hr class="col-md-12" />
-                        </div>
-                        <h4>Use tool</h4>
-                        <div class="row data">
+@executeSection = {
+        <h1>Use tool</h1>
 
-                            <!--- @@actionButtons --->
-                            <!--- @@common("uploader-basic-nobar") --->
-                            <pre id="status">[default]: Is JavaScript turned on?</pre>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="source">
-                        <h3>Source code</h3>
-                        <pre>@tool.sourceCode</pre>
-                        <div class="text-right">
-                            @@if(reviewPermission)
-                                <a class="btn btn-danger" href="@@routes.ApplicationController.reviewTool(tool.id.toLong)"><i class="glyphicon glyphicon-ok"></i>&nbsp;Review</a>
+        <!--- @@actionButtons --->
+        <!--- @@common("uploader-basic-nobar") --->
+        <pre>[default]: This feature has not been implemented yet.</pre>
+}
 
-                            @@if(deletePermission)
-                                <a class="btn btn-danger" href="@@routes.ApplicationController.deleteTool(tool.id.toLong)"><i class="glyphicon glyphicon-remove"></i>&nbsp;Delete</a>
+@codeSection = {
+    <h1>Source code</h1>
+    <pre>@tool.sourceCode</pre>
+    <div class="text-right">
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!---
+    @@if(reviewPermission)
+        <a class="btn btn-danger" href="@@routes.ApplicationController.reviewTool(tool.id.toLong)"><i class="glyphicon glyphicon-ok"></i>&nbsp;Review</a>
 
-        <div id="dataContainer" class="text-right"
-        data-ws-url="@@routes.ApplicationController.ws().webSocketURL()"
-        data-tool-id="@@tool.id"
-        data-tool-extension="@@tool.extension"
-        data-input-url="@@inputUrl.getOrElse("noFile")"
-        ></div>
+    @@if(deletePermission)
+        <a class="btn btn-danger" href="@@routes.ApplicationController.deleteTool(tool.id.toLong)"><i class="glyphicon glyphicon-remove"></i>&nbsp;Delete</a>
+    --->
     </div>
+}
+
+@subHeader = {
+    <div id="subHeader" class="row">
+        <div class="col-sm-8">
+            <a href="@routes.ToolController.details(tool.owner.handle, tool.name)"><span class="glyphicon glyphicon-user"></span> @tool.owner.handle</a>&nbsp;/
+            <a href="@routes.ToolController.details(tool.owner.handle, tool.name)">@tool.name</a>
+        </div>
+
+        <div class="col-sm-4 text-right">
+            By <a href="@routes.ToolController.details(tool.owner.handle, tool.name)">@tool.owner.name</a>
+            <!--- <img src="@tool.owner.avatarURL.getOrElse(routes.Assets.at("images/silhouette.png"))" style="height:40px;" /> --->
+        </div>
+    </div>
+}
+
+
+@main(pageInfo) {
+<div class="">
+    <div class="row">
+        <div class="col-md-8 col-centered">
+            @subHeader
+
+            @readmeSection
+            @executeSection
+            @codeSection
+        </div>
+    </div>
+
+
+
+    <div id="dataContainer" class="text-right"
+    data-ws-url="@@routes.ApplicationController.ws().webSocketURL()"
+    data-tool-id="@@tool.id"
+    data-tool-extension="@@tool.extension"
+    data-input-url="@@inputUrl.getOrElse('noFile')"
+    ></div>
+</div>
 }

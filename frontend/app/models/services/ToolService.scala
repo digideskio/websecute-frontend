@@ -1,13 +1,13 @@
 package models.services
 
-import com.mohiva.play.silhouette.api.services.IdentityService
-import models.{ Page, UiTool, User }
+import models.{ DbTool, Page, UiTool }
 
 import scala.concurrent.Future
 
 trait ToolService {
+  def upsert(tool: DbTool): Future[Int]
 
   def retrieve(ownerHandle: String, name: String): Future[Option[UiTool]]
 
-  def list(page: Int = 0, filter: String = "%", onlyReviewed: Boolean = true, ownerHandle: Option[String] = None): Future[Page[UiTool]]
+  def listAll(page: Int = 0, filter: String = "%"): Future[Page[UiTool]]
 }

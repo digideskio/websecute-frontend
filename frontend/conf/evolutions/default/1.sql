@@ -20,8 +20,8 @@ create table `Tools` (
   `OwnerHandle` VARCHAR(254) NOT NULL,
   `ReviewerHandle` VARCHAR(254),
   `SourceCode` VARCHAR(2048) NOT NULL,
-  `ReadmeMd` VARCHAR(254) NOT NULL,
-  `ReadmeHtml` VARCHAR(254) NOT NULL,
+  `ReadmeMd` VARCHAR(2048) NOT NULL,
+  `ReadmeHtml` VARCHAR(4096) NOT NULL,
   `Title` VARCHAR(254) NOT NULL,
   `Created` TIMESTAMP NOT NULL,
   PRIMARY KEY(`OwnerHandle`, `Name`)

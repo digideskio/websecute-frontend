@@ -21,7 +21,7 @@ class BrowseToolsController @Inject() (
   val socialProviderRegistry = SocialProviderRegistry
 
   def view(pageNo: Int, filter: String) = silhouette.SecuredAction.async { implicit request =>
-    toolService.list(page = pageNo, filter = filter) map { p =>
+    toolService.listAll(page = pageNo, filter = filter) map { p =>
       Ok(views.html.tool.browse(
         PageInfo(
           title = Messages("tools.browse.title"),
