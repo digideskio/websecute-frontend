@@ -9,7 +9,7 @@
 
         <!--- @@actionButtons --->
         <!--- @@common("uploader-basic-nobar") --->
-        <pre>[default]: This feature has not been implemented yet.</pre>
+        <pre id="msgBox">[default]: This feature has not been implemented yet.</pre>
 }
 
 @codeSection = {
@@ -43,24 +43,25 @@
 
 
 @main(pageInfo) {
-<div class="">
-    <div class="row">
-        <div class="col-md-8 col-centered">
-            @subHeader
+    <div class="">
+        <div class="row">
+            <div class="col-md-8 col-centered">
+                @subHeader
 
-            @readmeSection
-            @executeSection
-            @codeSection
+                @readmeSection
+                @executeSection
+                @codeSection
+            </div>
         </div>
+
+
+
+        <div id="dataContainer" class="text-right"
+        data-ws-url="@@routes.ApplicationController.ws().webSocketURL()"
+        data-tool-id="@@tool.id"
+        data-tool-extension="@@tool.extension"
+        data-input-url="@@inputUrl.getOrElse('noFile')"
+        ></div>
     </div>
-
-
-
-    <div id="dataContainer" class="text-right"
-    data-ws-url="@@routes.ApplicationController.ws().webSocketURL()"
-    data-tool-id="@@tool.id"
-    data-tool-extension="@@tool.extension"
-    data-input-url="@@inputUrl.getOrElse('noFile')"
-    ></div>
-</div>
+    @scalajs.html.scripts("client_tooldetail", routes.Assets.at(_).toString, name => getClass.getResource(s"/public/$name") != null)
 }

@@ -2,7 +2,7 @@ import com.typesafe.sbt.SbtScalariform._
 
 import scalariform.formatter.preferences._
 
-name := "websecute-frontend"
+name := "frontend"
 
 version := "4.0.0"
 
@@ -14,7 +14,8 @@ libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.34",
   "com.typesafe.slick" %% "slick" % "3.1.1",
   "com.typesafe.play" %% "play-slick-evolutions" % "2.0.0",
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.11.12"
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.11.12",
+  "com.vmunier" %% "scalajs-scripts" % "1.0.0"
 )
 
 resolvers += Resolver.jcenterRepo
@@ -35,8 +36,6 @@ libraryDependencies ++= Seq(
   cache,
   filters
 )
-
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 routesGenerator := InjectedRoutesGenerator
 
